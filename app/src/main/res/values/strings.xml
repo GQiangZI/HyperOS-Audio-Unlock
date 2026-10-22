@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">HyperOS 音效解锁</string>
+    <string name="xposed_desc">把系统 UI 的锁屏/解锁等音效重定向到 /product/media/audio/ui 下的自定义文件（配合音效替换模块使用）</string>
+</resources>
