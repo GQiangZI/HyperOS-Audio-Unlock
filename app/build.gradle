@@ -1,0 +1,41 @@
+plugins { id 'com.android.application' }
+
+android {
+    namespace 'com.qiangzi.hyperosaudiounlock'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId 'com.qiangzi.hyperosaudiounlock'
+        minSdk 26
+        targetSdk 28
+        versionCode 3
+        versionName '0.3'
+    }
+
+    buildTypes {
+        debug {
+            // 调试包也可直接安装
+        }
+        release {
+            minifyEnabled false
+            shrinkResources false
+            // 用 debug 密钥签名，保证 CI 产出可直接安装；正式发布请换成自己的 keystore
+            signingConfig signingConfigs.debug
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+
+    lint {
+        abortOnError false
+        checkReleaseBuilds false
+    }
+}
+
+dependencies {
+    // Legacy Xposed API 82，LSPosed 完全兼容；运行时由框架提供，不打包进 APK
+    compileOnly files('libs/api-82.jar')
+}
