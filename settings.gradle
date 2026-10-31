@@ -6,4 +6,4 @@ dependencyResolutionManagement {
     repositories { google(); mavenCentral() }
 }
 rootProject.name = 'HyperOS-Audio-Unlock'
-include ':app'
+include ':app', ':manager'
