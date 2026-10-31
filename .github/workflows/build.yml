@@ -3,6 +3,7 @@ name: build-apk
 on:
   push:
     branches: [ main ]
+    tags: [ 'v*' ]
   workflow_dispatch:
 
 jobs:
@@ -17,24 +18,26 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Set up Gradle 8.7
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Set up Gradle 9.7.1
         uses: gradle/actions/setup-gradle@v3
         with:
-          gradle-version: '8.7'
+          gradle-version: '9.7.1'
 
-      - name: Build release APK
-        run: gradle :app:assembleRelease --no-daemon --stacktrace
+      - name: Build both APK modules
+        run: gradle :app:assembleRelease :manager:assembleRelease --no-daemon --stacktrace
 
-      - name: Collect APK
+      - name: Collect APKs
         run: |
           mkdir -p out
-          APK=$(find app/build/outputs/apk/release -name '*.apk' | head -n 1)
-          echo "found: $APK"
-          cp "$APK" out/HyperOS-Audio-Unlock-0.3.apk
-          ls -l out
+          cp app/build/outputs/apk/release/*.apk out/HyperOS-Audio-Unlock.apk
+          cp manager/build/outputs/apk/release/*.apk out/HyperOS-Audio-Manager.apk
+          ls -lh out
 
-      - name: Upload artifact
+      - name: Upload APK artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: HyperOS-Audio-Unlock-apk
+          name: HyperOS-Audio-Unlock
           path: out/*.apk
