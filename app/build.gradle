@@ -1,32 +1,41 @@
-plugins { id 'com.android.application' }
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'org.jetbrains.kotlin.plugin.compose'
+}
 
 android {
     namespace 'com.qiangzi.hyperosaudiounlock'
-    compileSdk 34
+    compileSdk 36
 
     defaultConfig {
         applicationId 'com.qiangzi.hyperosaudiounlock'
         minSdk 26
-        targetSdk 28
-        versionCode 3
-        versionName '0.3'
+        targetSdk 35
+        versionCode 5
+        versionName '0.5-miuix-scope'
     }
 
-    buildTypes {
-        debug {
-            // 调试包也可直接安装
-        }
-        release {
-            minifyEnabled false
-            shrinkResources false
-            // 用 debug 密钥签名，保证 CI 产出可直接安装；正式发布请换成自己的 keystore
-            signingConfig signingConfigs.debug
-        }
+    buildFeatures {
+        compose = true
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = '17'
+    }
+
+    buildTypes {
+        debug { }
+        release {
+            minifyEnabled false
+            shrinkResources false
+            signingConfig signingConfigs.debug
+        }
     }
 
     lint {
@@ -38,4 +47,10 @@ android {
 dependencies {
     // Legacy Xposed API 82，LSPosed 完全兼容；运行时由框架提供，不打包进 APK
     compileOnly files('libs/api-82.jar')
+
+    // Miuix 0.9.4（Compose Multiplatform，Android 变体）
+    // 注意：0.9.0 起主产物已拆分，不再是旧的 miuix / miuix-android。
+    implementation 'top.yukonga.miuix.kmp:miuix-ui-android:0.9.4'
+    implementation 'top.yukonga.miuix.kmp:miuix-preference-android:0.9.4'
+    implementation 'androidx.activity:activity-compose:1.13.0'
 }
