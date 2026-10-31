@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- 必须和 Config.SCOPE 保持一致，见 docs/scope.md -->
     <string-array name="xposed_scope">
-        <item>com.android.systemui</item>
         <item>android</item>
+        <item>com.android.systemui</item>
+        <item>com.android.settings</item>
+        <item>com.xiaomi.misettings</item>
+        <item>com.android.thememanager</item>
+        <item>com.miui.miwallpaper</item>
+        <item>com.android.wallpaper.livepicker</item>
+        <item>com.miui.android.fashiongallery</item>
+        <item>com.android.camera</item>
     </string-array>
 </resources>
