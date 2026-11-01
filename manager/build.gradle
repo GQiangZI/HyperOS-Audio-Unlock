@@ -1,6 +1,5 @@
 plugins {
     id 'com.android.application'
-    id 'org.jetbrains.kotlin.android'
     id 'org.jetbrains.kotlin.plugin.compose'
 }
 
@@ -25,9 +24,8 @@ android {
         targetCompatibility JavaVersion.VERSION_17
     }
 
-    kotlinOptions {
-        jvmTarget = '17'
-    }
+    // AGP 9 内置 Kotlin：不要用 android.kotlinOptions，
+    // jvmTarget 默认跟 compileOptions.targetCompatibility（Java 17）一致。
 
     buildTypes {
         debug { }
