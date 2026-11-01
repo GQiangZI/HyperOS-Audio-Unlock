@@ -55,3 +55,16 @@ push 到 `main` 后 GitHub Actions 用 JDK 17 + Gradle 9.7.1 编译
 `:app:assembleRelease :manager:assembleRelease`，产物在 Artifacts 里。
 如果 CI 报 Compose / Activity 版本冲突，先看 CI 日志里的具体冲突，
 不要直接降 Miuix 版本——0.9.4 的 Compose 1.12 / Kotlin 2.4 是成套的。
+
+## AGP 9 内置 Kotlin（2026-11-01 CI 失败教训）
+
+AGP 9.4.1 默认开启内置 Kotlin，再声明 `org.jetbrains.kotlin.android`
+会在配置阶段被 `AgpWithBuiltInKotlinAppliedCheck` 拦下，报错栈里会出现
+`KotlinAndroidPluginWrapper.apply` 和 `Cannot add extension with name 'kotlin'` /
+`plugin is no longer required`。这不是 Miuix 或代码的问题，是插件冲突。
+
+正确做法（本仓库已改）：
+- 根 `build.gradle` 和各模块只留 `org.jetbrains.kotlin.plugin.compose`（2.4.20），删掉 `kotlin-android`。
+- 删掉 `android.kotlinOptions { jvmTarget }`，jvmTarget 默认跟
+  `compileOptions.targetCompatibility`（Java 17）一致。
+- 不要用 `android.builtInKotlin=false` 走回头路，那只是临时兼容，AGP 10 会去掉。
