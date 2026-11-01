@@ -5,7 +5,9 @@ plugins {
 
 android {
     namespace 'com.qiangzi.hyperosaudiounlock'
-    compileSdk 36
+    // Miuix 0.9.4 的 AAR 要求 compileSdk 至少 37（checkReleaseAarMetadata 会拦 36）
+    // 只改 compileSdk，不改 targetSdk/minSdk：日志里也说了这三者可以分开改。
+    compileSdk 37
 
     defaultConfig {
         applicationId 'com.qiangzi.hyperosaudiounlock'
