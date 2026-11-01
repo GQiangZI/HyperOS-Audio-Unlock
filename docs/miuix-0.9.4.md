@@ -68,3 +68,12 @@ AGP 9.4.1 默认开启内置 Kotlin，再声明 `org.jetbrains.kotlin.android`
 - 删掉 `android.kotlinOptions { jvmTarget }`，jvmTarget 默认跟
   `compileOptions.targetCompatibility`（Java 17）一致。
 - 不要用 `android.builtInKotlin=false` 走回头路，那只是临时兼容，AGP 10 会去掉。
+
+## compileSdk 必须是 37（2026-11-01 CI 失败教训）
+
+Miuix 0.9.4 的 `miuix-ui-android` / `miuix-preference-android` /
+`miuix-core-android` 等 AAR 在元数据里要求调用方 `compileSdk >= 37`，
+`compileSdk 36` 会在 `:app:checkReleaseAarMetadata` 和
+`:manager:checkReleaseAarMetadata` 直接失败（15 个 issue，全是这个原因）。
+修复只改 `compileSdk 36 -> 37`，`targetSdk 35` 和 `minSdk 26` 不动；
+workflow 里也要把 `platforms;android-36` 换成 `platforms;android-37`。
