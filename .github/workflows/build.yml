@@ -18,8 +18,24 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
+      # 注意：不要再加 android-actions/setup-android@v3。
+      # 它会在新版 runner 上跑 sdkmanager 去装早已不存在的 'tools' 包，
+      # 报 "Failed to find package 'tools'"，exit code 1，整个 job 在 7 秒内挂掉，
+      # 后面的 Gradle 步骤根本没跑（所以截图里它们都是 0s）。
+      # ubuntu-latest 自带 Android SDK（/usr/local/lib/android/sdk），
+      # AGP 直接用 ANDROID_HOME 就能找到，不需要这个 action。
+      - name: Install Android SDK packages
+        run: |
+          SDK_HOME="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-/usr/local/lib/android/sdk}}"
+          echo "SDK_HOME=$SDK_HOME"
+          SDKMGR=$(find "$SDK_HOME/cmdline-tools" -maxdepth 2 -name sdkmanager -type f 2>/dev/null | head -n 1)
+          if [ -z "$SDKMGR" ]; then
+            echo "::warning::sdkmanager not found, using preinstalled SDK as-is"
+            exit 0
+          fi
+          echo "sdkmanager: $SDKMGR"
+          yes | "$SDKMGR" --licenses > /dev/null || true
+          "$SDKMGR" "platform-tools" "platforms;android-36" "build-tools;36.0.0"
 
       - name: Set up Gradle 9.7.1
         uses: gradle/actions/setup-gradle@v3
